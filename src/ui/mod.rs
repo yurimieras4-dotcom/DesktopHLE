@@ -1,53 +1,33 @@
-use pixels::{Pixels, SurfaceTexture};
-use winit::{
-    dpi::LogicalSize,
-    event::{Event, WindowEvent},
-    event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
-};
+name: DesktopHLE CI
 
-pub fn run_ui() {
-    let event_loop = EventLoop::new();
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
-    // Crear la ventana principal simulando una pantalla Mac de resolución 640x480
-    let window = WindowBuilder::new()
-        .with_title("DesktopHLE - UITest (Beta)")
-        .with_inner_size(LogicalSize::new(640.0, 480.0))
-        .build(&event_loop)
-        .unwrap();
+env:
+  CARGO_TERM_COLOR: always
 
-    let window_size = window.inner_size();
-    let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, &window);
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
 
-    // Configurar el buffer de píxeles
-    let mut pixels = Pixels::new(640, 480, surface_texture).unwrap();
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Poll;
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
 
-        match event {
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                ..
-            } => {
-                *control_flow = ControlFlow::Exit;
-            }
-            Event::MainEventsCleared => {
-                // Dibujar un fondo básico en el framebuffer de píxeles
-                let frame = pixels.frame_mut();
-                for (_i, pixel) in frame.chunks_exact_mut(4).enumerate() {
-                    pixel[0] = 30; // Red
-                    pixel[1] = 30; // Green
-                    pixel[2] = 35; // Blue
-                    pixel[3] = 255; // Alpha
-                }
+      - name: Install Display Server (para la ventana)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dev
 
-                if let Err(err) = pixels.render() {
-                    eprintln!("Error al renderizar los píxeles: {err}");
-                    *control_flow = ControlFlow::Exit;
-                }
-            }
-            _ => (),
-        }
-    });
-}
+      - name: Build DesktopHLE
+        run: cargo build --verbose
+
+      - name: Run Tests
+        run: xvfb-run cargo test --verbose
