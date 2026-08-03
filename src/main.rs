@@ -1,4 +1,3 @@
-// src/main.rs
 mod ui;
 
 fn main() {
