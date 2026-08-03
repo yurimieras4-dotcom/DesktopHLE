@@ -42,9 +42,9 @@ pub fn run_ui() {
                 // Dibujar fondo en el framebuffer
                 let frame = pixels.frame_mut();
                 for pixel in frame.chunks_exact_mut(4) {
-                    pixel[0] = 30;  // Red
-                    pixel[1] = 30;  // Green
-                    pixel[2] = 35;  // Blue
+                    pixel[0] = 30; // Red
+                    pixel[1] = 30; // Green
+                    pixel[2] = 35; // Blue
                     pixel[3] = 255; // Alpha
                 }
 
