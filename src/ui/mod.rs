@@ -24,7 +24,7 @@ pub fn run_ui() {
     let mut pixels = Pixels::new(640, 480, surface_texture).unwrap();
 
     let egui_ctx = Context::default();
-    let mut egui_state = EguiState::new(&window);
+    let mut egui_state = EguiState::new(&event_loop);
 
     frameworks::app_kit::ns_application_main();
 
@@ -32,19 +32,19 @@ pub fn run_ui() {
         *control_flow = ControlFlow::Poll;
 
         match event {
-            Event::WindowEvent { event, .. } => {
-                let _ = egui_state.on_event(&egui_ctx, &event);
+            Event::WindowEvent { ref event, .. } => {
+                let _ = egui_state.on_event(&egui_ctx, event);
                 if let WindowEvent::CloseRequested = event {
                     *control_flow = ControlFlow::Exit;
                 }
             }
             Event::MainEventsCleared => {
-                // Dibujar fondo oscuro en el framebuffer
+                // Dibujar fondo en el framebuffer
                 let frame = pixels.frame_mut();
                 for pixel in frame.chunks_exact_mut(4) {
-                    pixel[0] = 30; // Red
-                    pixel[1] = 30; // Green
-                    pixel[2] = 35; // Blue
+                    pixel[0] = 30;  // Red
+                    pixel[1] = 30;  // Green
+                    pixel[2] = 35;  // Blue
                     pixel[3] = 255; // Alpha
                 }
 
