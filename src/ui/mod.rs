@@ -7,7 +7,7 @@ use winit::{
 };
 
 pub fn run_ui() {
-    let event_loop = EventLoop::new().unwrap();
+    let event_loop = EventLoop::new();
 
     // Crear la ventana principal simulando una pantalla Mac de resolución 640x480
     let window = WindowBuilder::new()

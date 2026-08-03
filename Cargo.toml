@@ -4,7 +4,7 @@ version = "0.0.0-beta"
 edition = "2021"
 
 [dependencies]
-winit = "0.29"
+winit = "0.28.7"
 pixels = "0.13"
 egui = "0.27"
 egui-winit = "0.27"
