@@ -32,7 +32,7 @@ pub fn run_ui() {
             }
             Event::MainEventsCleared => {
                 let frame = pixels.frame_mut();
-                for (_i, pixel) in frame.chunks_exact_mut(4).enumerate() {
+                for pixel in frame.chunks_exact_mut(4) {
                     pixel[0] = 30;
                     pixel[1] = 30;
                     pixel[2] = 35;
